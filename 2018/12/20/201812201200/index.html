@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>SpringBoot + Freemarker + LayUI框架搭建 | 光，从不吝啬锋芒~</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="由于一直做后台开发，对于前端的框架及js，css语法不是很熟悉，因此，搭建这个小项目用于学习前端知识。此项目使用SpringBoot、Freemarker，以及LayUI等框架，是一个用于个人财务管理的一个后台系统。学习目标：  掌握js，css语法，能够熟练使用前端框架 后台系统模拟正式项目，模块化开发，有单点登陆模块、日志模块、权限管理等，旨在系统的学习常规项目的构成元素及原理。">
+<meta name="keywords" content="Begin and never stop!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringBoot + Freemarker + LayUI框架搭建">
+<meta property="og:url" content="https://hezhiren.cn/2018/12/20/201812201200/index.html">
+<meta property="og:site_name" content="光，从不吝啬锋芒~">
+<meta property="og:description" content="由于一直做后台开发，对于前端的框架及js，css语法不是很熟悉，因此，搭建这个小项目用于学习前端知识。此项目使用SpringBoot、Freemarker，以及LayUI等框架，是一个用于个人财务管理的一个后台系统。学习目标：  掌握js，css语法，能够熟练使用前端框架 后台系统模拟正式项目，模块化开发，有单点登陆模块、日志模块、权限管理等，旨在系统的学习常规项目的构成元素及原理。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.imgur.com/MvKmS61.png">
+<meta property="og:updated_time" content="2018-12-20T06:21:29.832Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringBoot + Freemarker + LayUI框架搭建">
+<meta name="twitter:description" content="由于一直做后台开发，对于前端的框架及js，css语法不是很熟悉，因此，搭建这个小项目用于学习前端知识。此项目使用SpringBoot、Freemarker，以及LayUI等框架，是一个用于个人财务管理的一个后台系统。学习目标：  掌握js，css语法，能够熟练使用前端框架 后台系统模拟正式项目，模块化开发，有单点登陆模块、日志模块、权限管理等，旨在系统的学习常规项目的构成元素及原理。">
+<meta name="twitter:image" content="https://i.imgur.com/MvKmS61.png">
+  
+    <link rel="alternate" href="/atom.xml" title="光，从不吝啬锋芒~" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">光，从不吝啬锋芒~</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">存档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://hezhiren.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-201812201200" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/20/201812201200/" class="article-date">
+  <time datetime="2018-12-20T04:00:28.050Z" itemprop="datePublished">2018-12-20</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/SpringBoot/">SpringBoot</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      SpringBoot + Freemarker + LayUI框架搭建
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>由于一直做后台开发，对于前端的框架及js，css语法不是很熟悉，因此，搭建这个小项目用于学习前端知识。<br>此项目使用SpringBoot、Freemarker，以及LayUI等框架，是一个用于个人财务管理的一个后台系统。<br>学习目标：</p>
+<ul>
+<li>掌握js，css语法，能够熟练使用前端框架</li>
+<li>后台系统模拟正式项目，模块化开发，有单点登陆模块、日志模块、权限管理等，旨在系统的学习常规项目的构成元素及原理。<a id="more"></a>
+</li>
+</ul>
+<h3 id="一、准备工作"><a href="#一、准备工作" class="headerlink" title="一、准备工作"></a>一、准备工作</h3><p>首先搭建spring项目的框架，使用<a href="https://start.spring.io/" target="_blank" rel="noopener">https://start.spring.io/</a> ,可以快速搭建一个简单的项目，并且可以添加常用的依赖。项目的搭建就不再次赘述，下面重点是依赖的添加以及layui和freemarker的配置。</p>
+<pre><code>&lt;dependency&gt;
+       &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+       &lt;artifactId&gt;spring-boot-starter-freemarker&lt;/artifactId&gt;
+       &lt;version&gt;2.0.1.RELEASE&lt;/version&gt;
+&lt;/dependency&gt;
+
+&lt;dependencies&gt;
+   &lt;dependency&gt;
+       &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+       &lt;artifactId&gt;spring-boot-starter-web&lt;/artifactId&gt;
+   &lt;/dependency&gt;
+
+   &lt;dependency&gt;
+       &lt;groupId&gt;org.mybatis.spring.boot&lt;/groupId&gt;
+       &lt;artifactId&gt;mybatis-spring-boot-starter&lt;/artifactId&gt;
+       &lt;version&gt;1.3.2&lt;/version&gt;
+   &lt;/dependency&gt;
+
+   &lt;dependency&gt;
+       &lt;groupId&gt;mysql&lt;/groupId&gt;
+       &lt;artifactId&gt;mysql-connector-java&lt;/artifactId&gt;
+       &lt;version&gt;5.1.41&lt;/version&gt;
+   &lt;/dependency&gt;
+
+   &lt;dependency&gt;
+       &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+       &lt;artifactId&gt;druid&lt;/artifactId&gt;
+       &lt;version&gt;1.0.29&lt;/version&gt;
+   &lt;/dependency&gt;
+
+   &lt;dependency&gt;
+       &lt;groupId&gt;com.alibaba&lt;/groupId&gt;
+       &lt;artifactId&gt;fastjson&lt;/artifactId&gt;
+       &lt;version&gt;1.2.31&lt;/version&gt;
+   &lt;/dependency&gt;
+
+   &lt;dependency&gt;
+       &lt;groupId&gt;org.projectlombok&lt;/groupId&gt;
+       &lt;artifactId&gt;lombok&lt;/artifactId&gt;
+       &lt;optional&gt;true&lt;/optional&gt;
+   &lt;/dependency&gt;
+   &lt;dependency&gt;
+       &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;
+       &lt;artifactId&gt;spring-boot-starter-test&lt;/artifactId&gt;
+       &lt;scope&gt;test&lt;/scope&gt;
+   &lt;/dependency&gt;
+</code></pre><p>首先做一下数据库的配置：</p>
+<pre><code># datasource config
+spring.datasource.driver-class-name=com.mysql.jdbc.Driver
+spring.datasource.url=jdbc:mysql//127.0.0.1:3306/finance_manager?userSSL=false&amp;charset=utf-8
+spring.datasource.username=root
+spring.datasource.password=root
+</code></pre><p>接着是freemarker的配置</p>
+<pre><code># FTL配置
+spring.freemarker.suffix=.ftl
+spring.freemarker.charset=UTF-8
+spring.freemarker.template-loader-path=classpath:/templates/
+spring.freemarker.cache=false
+multipart.maxFileSize=60MB
+multipart.maxRequestSize=60MB
+
+# FTL中引用js和css路径配置
+spring.freemarker.request-context-attribute=base
+spring.freemarker.expose-request-attributes=true
+spring.freemarker.expose-session-attributes=true
+spring.freemarker.expose-spring-macro-helpers=true
+</code></pre><p>静态资源统一放在resource下的static文件夹下，ftl文件放在templates文件夹下，至此，简单的配置就完成了。</p>
+<p>至于layui相关的文件，如何放置以及文件的目录之间的关系在官方文档有介绍，这里就不多说了，我是放在static/layui下的。</p>
+<h3 id="测试demo"><a href="#测试demo" class="headerlink" title="测试demo"></a>测试demo</h3><p>再配置完成后，可以先简单写一个测试demo测试下项目能否政正常启动。<br><br><br>Controller层:</p>
+<pre><code>@RequestMapping(&quot;toIndex.do&quot;)
+public String toIndex() {
+    return &quot;index&quot;;
+}
+</code></pre><p>index.ftl页面：</p>
+<pre><code>&lt;!DOCTYPE html&gt;
+&lt;html&gt;
+&lt;head&gt;
+&lt;meta charset=&quot;utf-8&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1&quot;&gt;
+&lt;title&gt;layout 后台大布局 - Layui&lt;/title&gt;
+&lt;meta name=&quot;renderer&quot; content=&quot;webkit&quot;&gt;
+&lt;meta http-equiv=&quot;X-UA-Compatible&quot; content=&quot;IE=edge,chrome=1&quot;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1, maximum-scale=1&quot;&gt;
+&lt;meta name=&quot;apple-mobile-web-app-status-bar-style&quot; content=&quot;black&quot;&gt;
+&lt;meta name=&quot;apple-mobile-web-app-capable&quot; content=&quot;yes&quot;&gt;
+&lt;meta name=&quot;format-detection&quot; content=&quot;telephone=no&quot;&gt;
+
+&lt;link rel=&quot;stylesheet&quot; href=&quot;${base.contextPath}/layui/css/layui.css&quot;  media=&quot;all&quot;&gt;
+&lt;/head&gt;
+&lt;body class=&quot;layui-layout-body&quot;&gt;
+&lt;div class=&quot;layui-layout layui-layout-admin&quot;&gt;
+&lt;div class=&quot;layui-header&quot;&gt;
+&lt;div class=&quot;layui-logo&quot;&gt;Finance Manager System&lt;/div&gt;
+&lt;!-- 头部区域（可配合layui已有的水平导航） --&gt;
+&lt;ul class=&quot;layui-nav layui-layout-left&quot;&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;控制台&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;商品管理&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;用户&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;
+&lt;a href=&quot;javascript:;&quot;&gt;其它系统&lt;/a&gt;
+&lt;dl class=&quot;layui-nav-child&quot;&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;邮件管理&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;消息管理&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;授权管理&lt;/a&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;ul class=&quot;layui-nav layui-layout-right&quot;&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;
+&lt;a href=&quot;javascript:;&quot;&gt;
+&lt;img src=&quot;//tva1.sinaimg.cn/crop.0.0.118.118.180/5db11ff4gw1e77d3nqrv8j203b03cweg.jpg&quot; class=&quot;layui-nav-img&quot;&gt;
+贤心
+&lt;/a&gt;
+&lt;dl class=&quot;layui-nav-child&quot;&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;基本资料&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;安全设置&lt;/a&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;退了&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;layui-side layui-bg-black&quot;&gt;
+&lt;div class=&quot;layui-side-scroll&quot;&gt;
+&lt;!-- 左侧导航区域（可配合layui已有的垂直导航） --&gt;
+&lt;ul class=&quot;layui-nav layui-nav-tree&quot;  lay-filter=&quot;test&quot;&gt;
+&lt;li class=&quot;layui-nav-item layui-nav-itemed&quot;&gt;
+&lt;a class=&quot;&quot; href=&quot;javascript:;&quot;&gt;所有商品&lt;/a&gt;
+&lt;dl class=&quot;layui-nav-child&quot;&gt;
+&lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;列表一&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;列表二&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;列表三&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;超链接&lt;/a&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;
+&lt;a href=&quot;javascript:;&quot;&gt;解决方案&lt;/a&gt;
+&lt;dl class=&quot;layui-nav-child&quot;&gt;
+&lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;列表一&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;javascript:;&quot;&gt;列表二&lt;/a&gt;&lt;/dd&gt;
+&lt;dd&gt;&lt;a href=&quot;&quot;&gt;超链接&lt;/a&gt;&lt;/dd&gt;
+&lt;/dl&gt;
+&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;云市场&lt;/a&gt;&lt;/li&gt;
+&lt;li class=&quot;layui-nav-item&quot;&gt;&lt;a href=&quot;&quot;&gt;发布商品&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;layui-body&quot;&gt;
+&lt;!-- 内容主体区域 --&gt;
+&lt;div style=&quot;padding: 15px;&quot;&gt;
+内容主体区域
+
+&lt;br&gt;&lt;br&gt;
+
+&lt;blockquote class=&quot;layui-elem-quote&quot;&gt;
+注意：该页面只是简单的后台布局示例，并不是一整套后台系统方案，您可以关注 layui 官方提供后台模板解决方案：
+&lt;a href=&quot;https://www.layui.com/admin/&quot; target=&quot;_blank&quot; class=&quot;layui-btn layui-btn-danger&quot;&gt;layuiAdmin&lt;/a&gt;
+&lt;/blockquote&gt;
+
+&lt;blockquote class=&quot;layui-elem-quote&quot;&gt;
+layui 之所以赢得如此多人的青睐，更多是在于它“前后台系统通吃”的能力。既可编织出绚丽的前台页面，又可满足繁杂的后台功能需求。
+&lt;br&gt;layui 后台布局， 致力于让每一位开发者都能轻松搭建自己的后台模板。
+&lt;/blockquote&gt;
+
+&lt;a href=&quot;/doc/element/layout.html#admin&quot; target=&quot;_blank&quot; class=&quot;layui-btn layui-btn-lg&quot;&gt;获取该布局代码&lt;/a&gt;
+
+&lt;br&gt;&lt;br&gt;&lt;br&gt;&lt;br&gt;
+
+
+
+
+下面是充数内容，为的是出现滚动条&lt;br&gt;充数内容&lt;br&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+
+&lt;div class=&quot;layui-footer&quot;&gt;
+&lt;!-- 底部固定区域 --&gt;
+© layui.com - 底部固定区域
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;script src=&quot;${base.contextPath}/layui/layui.js&quot; charset=&quot;utf-8&quot;&gt;&lt;/script&gt;
+&lt;script&gt;
+//JavaScript代码区域
+layui.use(&apos;element&apos;, function(){
+var element = layui.element;
+});
+&lt;/script&gt;
+&lt;script&gt;
+var _hmt = _hmt || [];
+(function() {
+var hm = document.createElement(&quot;script&quot;);
+hm.src = &quot;https://hm.baidu.com/hm.js?d214947968792b839fd669a4decaaffc&quot;;
+var s = document.getElementsByTagName(&quot;script&quot;)[0];
+s.parentNode.insertBefore(hm, s);
+})();
+&lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+</code></pre><p>这个模板是直接从layui官方案例直接复制的，测试一下layuiu框架的集成有没有问题。</p>
+<hr>
+<p>在此处需要注意的问题，${base.contextPath}中的<em>base</em>是在properties配置文件中的<em>spring.freemarker.request-context-attribute</em>，此上下文可用于获取项目根目录。<br><strong>在此处遇到很坑的一个问题就是我是用IDEA创建的项目，默认是有webapp文件夹的，但是项目不需要，我就把文件夹中的东西给删了，但是在Project-Structure界面查看module，发现项目配置了web.xml文件路径，但是此文件被我删了，导致页面显示时，找不到js和css文件，把这个配置的路径删除即可正常显示。</strong></p>
+<h2 id=""><a href="#" class="headerlink" title=""></a><img src="https://i.imgur.com/MvKmS61.png" alt=""></h2><p>至此一个简单的框架就搭建起来了，接下来就建立数据库，添加主要的几个模块了。</p>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hezhiren.cn/2018/12/20/201812201200/" data-id="cjuuo071l000sfcajoujhiyxl" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/12/21/Phoenix/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          Phoenix初学笔记
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/12/20/201812201037/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">手机号脱敏处理</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HBase/">HBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/String/">String</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/定时任务/">定时任务</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具类方法/">工具类方法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql优化/">sql优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/索引/">索引</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/sql优化/" style="font-size: 10px;">sql优化</a> <a href="/tags/索引/" style="font-size: 10px;">索引</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/03/01/201903011430 /">定时任务QuartZ学习一</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/14/201901141043/">设计模式之二——工厂模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/11/201901111130/">设计模式之一——单例模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/07/201901071534/">String...的用法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/25/201812252130/">Explain分析sql语句执行效率</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 hezhiren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">存档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

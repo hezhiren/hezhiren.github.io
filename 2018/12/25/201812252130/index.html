@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Explain分析sql语句执行效率 | 光，从不吝啬锋芒~</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="这两天把数据库搞挂了一次，就决心要把sql优化相关的知识学习，这篇文章主要学习explain的使用以及结合上篇文章实战演习下几种索引无效的情况。">
+<meta name="keywords" content="sql优化">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Explain分析sql语句执行效率">
+<meta property="og:url" content="https://hezhiren.cn/2018/12/25/201812252130/index.html">
+<meta property="og:site_name" content="光，从不吝啬锋芒~">
+<meta property="og:description" content="这两天把数据库搞挂了一次，就决心要把sql优化相关的知识学习，这篇文章主要学习explain的使用以及结合上篇文章实战演习下几种索引无效的情况。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.imgur.com/0OpXBOo.png">
+<meta property="og:image" content="https://i.imgur.com/wbHPQbU.png">
+<meta property="og:image" content="https://i.imgur.com/o2JorTP.png">
+<meta property="og:image" content="https://i.imgur.com/u22o9PZ.png">
+<meta property="og:image" content="https://i.imgur.com/KcnHm1e.png">
+<meta property="og:image" content="https://i.imgur.com/IxIpiuB.png">
+<meta property="og:image" content="https://i.imgur.com/E80yIkB.png">
+<meta property="og:updated_time" content="2018-12-25T08:21:23.810Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Explain分析sql语句执行效率">
+<meta name="twitter:description" content="这两天把数据库搞挂了一次，就决心要把sql优化相关的知识学习，这篇文章主要学习explain的使用以及结合上篇文章实战演习下几种索引无效的情况。">
+<meta name="twitter:image" content="https://i.imgur.com/0OpXBOo.png">
+  
+    <link rel="alternate" href="/atom.xml" title="光，从不吝啬锋芒~" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">光，从不吝啬锋芒~</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">存档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://hezhiren.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-201812252130" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/25/201812252130/" class="article-date">
+  <time datetime="2018-12-24T16:00:00.000Z" itemprop="datePublished">2018-12-25</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/Mysql/">Mysql</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Explain分析sql语句执行效率
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>这两天把数据库搞挂了一次，就决心要把sql优化相关的知识学习，这篇文章主要学习explain的使用以及结合上篇文章实战演习下几种索引无效的情况。<br><a id="more"></a></p>
+<h3 id="一、Explain介绍及使用"><a href="#一、Explain介绍及使用" class="headerlink" title="一、Explain介绍及使用"></a>一、Explain介绍及使用</h3><p>在工作中，我们用于捕捉性能问题最常用的就是打开慢查询，定位执行效率差的SQL，那么当我们定位到一个SQL以后还不算完事，我们还需要知道该SQL的执行计划，比如是全表扫描，还是索引扫描，这些都需要通过EXPLAIN去完成。EXPLAIN命令是查看优化器如何决定执行查询的主要方法。</p>
+<p>explain的使用很简单，在select语句前加上explain就ok了。<br><img src="https://i.imgur.com/0OpXBOo.png" alt=""><br>我在user中创建了一个一个索引idx_name_age_phone,这是一个组合索引，包含三个字段。</p>
+<h4 id="重要参数释义"><a href="#重要参数释义" class="headerlink" title="重要参数释义"></a>重要参数释义</h4><p>先来看下explain解释执行的主要参数的含义：<br><img src="https://i.imgur.com/wbHPQbU.png" alt=""></p>
+<ol>
+<li><p><strong>id</strong>: 包含一组数字，表示查询中执行select子句或操作表的顺序,id相同，顺序执行由上到下。如果是子查询，id的序号会递增，id值越大优先级越高，越先被执行。id如果相同，可认为是一组，执行顺序由上至下，在所有组中，id越大，执行优先级越高。</p>
+</li>
+<li><p><strong>select_type</strong>:表示每个select子句的类型</p>
+<ul>
+<li>SIMPLE:查询中不包含子查询或union</li>
+<li>PRIMARY:查询中若包含任何复杂的子部分，最外层查询则被标记为primary。</li>
+<li>SUBQUERY:在select或where列表中包含了子查询，该子查询被标记为subquery。</li>
+<li>DERIVED:在FROM列表中包含的子查询被标记为DERIVED（衍生），用来表示包含在from子句中的子查询的select，mysql会递归执行并将结果放到一个临时表中。服务器内部称为”派生表”，因为该临时表是从子查询中派生出来的</li>
+<li>若第二个SELECT出现在UNION之后，则被标记为UNION；若UNION包含在FROM子句的子查询中，外层SELECT将被标记为：DERIVED</li>
+<li>从UNION表获取结果的SELECT被标记为：UNION RESULT</li>
+<li>SUBQUERY和UNION还可以被标记为DEPENDENT和UNCACHEABLE。DEPENDENT意味着select依赖于外层查询中发现的数据。UNCACHEABLE意味着select中的某些特性阻止结果被缓存于一个item_cache中。</li>
+</ul>
+</li>
+<li><p><strong>type</strong>:表示MySQL在表中找到所需行的方式，又称“访问类型”，常见类型如下:<br><br> ALL, index,  range, ref, eq_ref, const, system, NULL<br> 从左到右，性能从最差到最好。</p>
+<ul>
+<li>All:Full table scan，全表扫描，Mysql将遍历全表以找到匹配的行。</li>
+<li>index：full index scan，index类型只遍历索引树。</li>
+<li>range：索引范围扫描，对索引的扫描开始于某一点，返回匹配值域的行。显而易见的索引范围扫描是带有between或者where子句里带有&lt;, &gt;查询。当mysql使用索引去查找一系列值时，例如IN()和OR列表，也会显示range（范围扫描）,当然性能上面是有差异的。</li>
+<li>ref：使用非唯一索引扫描或者唯一索引的前缀扫描，返回匹配某个单独值的记录行</li>
+<li>eq_ref:类似ref，区别就在使用的索引是唯一索引，对于每个索引键值，表中只有一条记录匹配，简单来说，就是多表连接中使用primary key或者 unique key作为关联条件</li>
+<li>const,system:当MySQL对查询某部分进行优化，并转换为一个常量时，使用这些类型访问。如将主键置于where列表中，MySQL就能将该查询转换为一个常量,注：system是const类型的特例，当查询的表只有一行的情况下，使用system</li>
+<li>null：MySQL在优化过程中分解语句，执行时甚至不用访问表或索引，例如从一个索引列里选取最小值可以通过单独索引查找完成。</li>
+</ul>
+</li>
+<li><p><strong>possible_keys</strong>：指出MySQL能使用哪个索引在表中找到记录，查询涉及到的字段上若存在索引，则该索引将被列出，但不一定被查询使用</p>
+</li>
+<li><p><strong>key</strong>：显示MySQL在查询中实际使用的索引，若没有使用索引，显示为NULL。</p>
+</li>
+<li><p><strong>key_len</strong>：表示索引中使用的字节数，可通过该列计算查询中使用的索引的长度（key_len显示的值为索引字段的最大可能长度，并非实际使用长度，即key_len是根据表定义计算而得，不是通过表内检索出的）</p>
+</li>
+<li><p><strong>ref</strong>：表示上述表的连接匹配条件，即哪些列或常量被用于查找索引列上的值。</p>
+</li>
+<li><p><strong>rows</strong>：表示MySQL根据表统计信息及索引选用情况，估算的找到所需的记录所需要读取的行数</p>
+</li>
+<li><p><strong>Extra</strong>： 包含不适合在其他列中显示但十分重要的额外信息</p>
+</li>
+<li><p><strong>filtered</strong>：　在mysql5.1里新加的，在使用explain extended时出现。它显示的是针对表里符合条件的记录数的百分比所做的一个悲观估算值。filtered 列给出了一个百分比的值，这个百分比值和rows 列的值相乘，可以估计出那些将要和QEP 中的前一个表进行连接的行的数目。前一个表就是指id 列的值比当前表的id 小的表。这一列只有在EXPLAIN EXTENDED 语句中才会出现。</p>
+</li>
+</ol>
+<h4 id="二、索引失效的几种情况"><a href="#二、索引失效的几种情况" class="headerlink" title="二、索引失效的几种情况"></a>二、索引失效的几种情况</h4><p>下面就看一下这个组合索引在不同select语句中的执行情况。现在分情况验证下索引失效的问题：</p>
+<ol>
+<li><p>查询条件中字段顺序不遵循最左前缀集合 </p>
+<ul>
+<li><p>首个查询字段不是组合索引首位</p>
+<pre><code>`explain select * from user where age = 20 and phone = &apos;17311111111&apos;`
+</code></pre><p><img src="https://i.imgur.com/o2JorTP.png" alt=""><br><strong>可以看出这里是用了全表扫描。</strong> </p>
+</li>
+<li><p>查询字段中断</p>
+<p>   <code>explain select * from user where age = 20 and phone = &#39;17311111111&#39;</code><br><img src="https://i.imgur.com/u22o9PZ.png" alt=""><br>只是用了name，没有使用phone，因为age中断了。</p>
+</li>
+</ul>
+</li>
+<li><p>范围条件(between,&gt;,&lt;,in等）右边的字段不能继续使用索引。</p>
+<pre><code>`explain select * from user where name = &apos;张三&apos; and age &gt; 20 and phone = &apos;17311111111&apos;`
+</code></pre><p> <img src="https://i.imgur.com/KcnHm1e.png" alt=""><br>只用了name和age的索引，age之后的就断了。</p>
+</li>
+<li><p>使用like迷糊查询<br></p>
+<ul>
+<li><p>使用like模糊查询也可能会出现索引失效，但是这个是分情况的，有的是全部失效，有的是部分失效。<br><code>explain select * from user where name like &#39;%张%&#39; and age = 20 and phone = &#39;17311111111&#39;</code><br><img src="https://i.imgur.com/IxIpiuB.png" alt=""><br>使用了%开头的这种查询，都会进行全表扫描，导致索引失效。</p>
+</li>
+<li><p>结尾使用“%”</p>
+<p>   <code>explain select * from user where name like &#39;张三%&#39; and age = 20 and phone = &#39;17311111111&#39;</code><br><img src="https://i.imgur.com/E80yIkB.png" alt=""><br>这种情况不会全表扫描，变为range范围查找，但是与&gt;,&lt;,between不同的是，不会导致范围右边的索引失效。</p>
+</li>
+</ul>
+</li>
+<li><p>如果索引字段是字符串，查询时没有使用单引号，也会转为全表扫描，使用or也会是索引失效，转向全表扫描</p>
+</li>
+</ol>
+
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hezhiren.cn/2018/12/25/201812252130/" data-id="cjuuo07100006fcajbc1lkei8" class="article-share-link">Share</a>
+      
+      
+  <ul class="article-tag-list"><li class="article-tag-list-item"><a class="article-tag-list-link" href="/tags/sql优化/">sql优化</a></li></ul>
+
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/07/201901071534/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          String...的用法
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/12/24/201812241630/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">数据库查询注意事项及索引使用</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HBase/">HBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/String/">String</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/定时任务/">定时任务</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具类方法/">工具类方法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql优化/">sql优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/索引/">索引</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/sql优化/" style="font-size: 10px;">sql优化</a> <a href="/tags/索引/" style="font-size: 10px;">索引</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/03/01/201903011430 /">定时任务QuartZ学习一</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/14/201901141043/">设计模式之二——工厂模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/11/201901111130/">设计模式之一——单例模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/07/201901071534/">String...的用法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/25/201812252130/">Explain分析sql语句执行效率</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 hezhiren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">存档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

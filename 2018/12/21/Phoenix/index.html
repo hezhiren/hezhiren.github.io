@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>Phoenix初学笔记 | 光，从不吝啬锋芒~</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="一、背景：业务中使用Hbase数据库，但是由于HBase本身不支持sql查询和二级缓存，    所以以来其他方案来解决这种问题。Phoenix就是其中之一。Phoenix 其本质是用Java写的基于JDBC API操作HBase的开源SQL引擎">
+<meta name="keywords" content="Begin and never stop!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Phoenix初学笔记">
+<meta property="og:url" content="https://hezhiren.cn/2018/12/21/Phoenix/index.html">
+<meta property="og:site_name" content="光，从不吝啬锋芒~">
+<meta property="og:description" content="一、背景：业务中使用Hbase数据库，但是由于HBase本身不支持sql查询和二级缓存，    所以以来其他方案来解决这种问题。Phoenix就是其中之一。Phoenix 其本质是用Java写的基于JDBC API操作HBase的开源SQL引擎">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:image" content="https://i.imgur.com/ZkcOHJu.png">
+<meta property="og:image" content="https://i.imgur.com/nfxQpNZ.png">
+<meta property="og:updated_time" content="2018-12-21T11:35:17.090Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Phoenix初学笔记">
+<meta name="twitter:description" content="一、背景：业务中使用Hbase数据库，但是由于HBase本身不支持sql查询和二级缓存，    所以以来其他方案来解决这种问题。Phoenix就是其中之一。Phoenix 其本质是用Java写的基于JDBC API操作HBase的开源SQL引擎">
+<meta name="twitter:image" content="https://i.imgur.com/ZkcOHJu.png">
+  
+    <link rel="alternate" href="/atom.xml" title="光，从不吝啬锋芒~" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">光，从不吝啬锋芒~</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">存档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://hezhiren.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-Phoenix" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2018/12/21/Phoenix/" class="article-date">
+  <time datetime="2018-12-21T09:36:50.847Z" itemprop="datePublished">2018-12-21</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/HBase/">HBase</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      Phoenix初学笔记
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <h3 id="一、背景："><a href="#一、背景：" class="headerlink" title="一、背景："></a>一、背景：</h3><p>业务中使用Hbase数据库，但是由于HBase本身不支持sql查询和二级缓存，    所以以来其他方案来解决这种问题。<br>Phoenix就是其中之一。<br><em>Phoenix</em> 其本质是用Java写的基于JDBC API操作HBase的开源SQL引擎<br><a id="more"></a><br><img src="https://i.imgur.com/ZkcOHJu.png" alt=""></p>
+<p>参考文章：<a href="https://www.cnblogs.com/ballwql/p/8371234.html" target="_blank" rel="noopener">https://www.cnblogs.com/ballwql/p/8371234.html</a></p>
+<h3 id="二、常用语法"><a href="#二、常用语法" class="headerlink" title="二、常用语法"></a>二、常用语法</h3><p><br>数据模型:<br><br><br><img src="https://i.imgur.com/nfxQpNZ.png" alt=""></p>
+<h4 id="1-建表语句"><a href="#1-建表语句" class="headerlink" title="1.建表语句"></a>1.建表语句</h4><p>对于Phoenix来说，HBase的rowkey会被转换成primary key，column family如果不指定则为0否则字段名会带上，qualifier转换成表的字段名，如下是创建一个Phoenix表的例子，以创建表test为例，主键为id即为HBase的rowkey, column family为i, qualifier为name和age。</p>
+<pre><code>CREATE TABLE depart_income_detail (
+stat_month varchar(10) NOT NULL,
+PROVINCE_CODE varchar(10) NOT NULL,
+city_code varchar(10) DEFAULT NULL,
+chnl_name varchar(100) DEFAULT NULL,
+chnl_id varchar(10) NOT NULL,
+  constraint pk primary key(stat_month, chnl_id)            
+);        
+</code></pre><h4 id="2-更新语句"><a href="#2-更新语句" class="headerlink" title="2.更新语句"></a>2.更新语句</h4><pre><code>UPSERT INTO TEST VALUES(&apos;foo&apos;,&apos;bar&apos;,3);
+UPSERT INTO TEST(NAME,ID) VALUES(&apos;foo&apos;,123);
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hezhiren.cn/2018/12/21/Phoenix/" data-id="cjuuo0715000efcaj5ip8yq5o" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2018/12/24/201812241630/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          数据库查询注意事项及索引使用
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/12/20/201812201200/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">SpringBoot + Freemarker + LayUI框架搭建</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HBase/">HBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/String/">String</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/定时任务/">定时任务</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具类方法/">工具类方法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql优化/">sql优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/索引/">索引</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/sql优化/" style="font-size: 10px;">sql优化</a> <a href="/tags/索引/" style="font-size: 10px;">索引</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/03/01/201903011430 /">定时任务QuartZ学习一</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/14/201901141043/">设计模式之二——工厂模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/11/201901111130/">设计模式之一——单例模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/07/201901071534/">String...的用法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/25/201812252130/">Explain分析sql语句执行效率</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 hezhiren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">存档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>

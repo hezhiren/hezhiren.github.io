@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html>
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="utf-8">
+  
+
+  
+  <title>String...的用法 | 光，从不吝啬锋芒~</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+  <meta name="description" content="在项目中，在检查参数是否为空的工具类中，出现了一个函数的参数列表是这种写法，于是学习了一下这种用法的使用。个人觉得这种处理还是很不错的，使得代码更加简洁。">
+<meta name="keywords" content="Begin and never stop!">
+<meta property="og:type" content="article">
+<meta property="og:title" content="String...的用法">
+<meta property="og:url" content="https://hezhiren.cn/2019/01/07/201901071534/index.html">
+<meta property="og:site_name" content="光，从不吝啬锋芒~">
+<meta property="og:description" content="在项目中，在检查参数是否为空的工具类中，出现了一个函数的参数列表是这种写法，于是学习了一下这种用法的使用。个人觉得这种处理还是很不错的，使得代码更加简洁。">
+<meta property="og:locale" content="zh-CN">
+<meta property="og:updated_time" content="2019-01-07T08:44:02.297Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="String...的用法">
+<meta name="twitter:description" content="在项目中，在检查参数是否为空的工具类中，出现了一个函数的参数列表是这种写法，于是学习了一下这种用法的使用。个人觉得这种处理还是很不错的，使得代码更加简洁。">
+  
+    <link rel="alternate" href="/atom.xml" title="光，从不吝啬锋芒~" type="application/atom+xml">
+  
+  
+    <link rel="icon" href="/favicon.ico">
+  
+  
+    <link href="//fonts.googleapis.com/css?family=Source+Code+Pro" rel="stylesheet" type="text/css">
+  
+  <link rel="stylesheet" href="/css/style.css">
+</head>
+</html>
+<body>
+  <div id="container">
+    <div id="wrap">
+      <header id="header">
+  <div id="banner"></div>
+  <div id="header-outer" class="outer">
+    <div id="header-title" class="inner">
+      <h1 id="logo-wrap">
+        <a href="/" id="logo">光，从不吝啬锋芒~</a>
+      </h1>
+      
+    </div>
+    <div id="header-inner" class="inner">
+      <nav id="main-nav">
+        <a id="main-nav-toggle" class="nav-icon"></a>
+        
+          <a class="main-nav-link" href="/">首页</a>
+        
+          <a class="main-nav-link" href="/archives">存档</a>
+        
+      </nav>
+      <nav id="sub-nav">
+        
+          <a id="nav-rss-link" class="nav-icon" href="/atom.xml" title="RSS Feed"></a>
+        
+        <a id="nav-search-btn" class="nav-icon" title="搜索"></a>
+      </nav>
+      <div id="search-form-wrap">
+        <form action="//google.com/search" method="get" accept-charset="UTF-8" class="search-form"><input type="search" name="q" class="search-form-input" placeholder="Search"><button type="submit" class="search-form-submit">&#xF002;</button><input type="hidden" name="sitesearch" value="https://hezhiren.cn"></form>
+      </div>
+    </div>
+  </div>
+</header>
+      <div class="outer">
+        <section id="main"><article id="post-201901071534" class="article article-type-post" itemscope="" itemprop="blogPost">
+  <div class="article-meta">
+    <a href="/2019/01/07/201901071534/" class="article-date">
+  <time datetime="2019-01-06T16:00:00.000Z" itemprop="datePublished">2019-01-07</time>
+</a>
+    
+  <div class="article-category">
+    <a class="article-category-link" href="/categories/String/">String</a>
+  </div>
+
+  </div>
+  <div class="article-inner">
+    
+    
+      <header class="article-header">
+        
+  
+    <h1 class="article-title" itemprop="name">
+      String...的用法
+    </h1>
+  
+
+      </header>
+    
+    <div class="article-entry" itemprop="articleBody">
+      
+        <p>在项目中，在检查参数是否为空的工具类中，出现了一个函数的参数列表是这种写法，于是学习了一下这种用法的使用。个人觉得这种处理还是很不错的，使得代码更加简洁。</p>
+<a id="more"></a>
+<p>String…是java5新加入的功能，表示的是一个可变长度的参数列表。</p>
+<p>其语法就是类型后跟…，表示此处接受的参数为0到多个Object类型的对象，或者是一个Object[]。 例如我们有一个方法叫做test(String…strings)，那么你还可以写方法test()，但你不能写test(String[] strings)，这样会出编译错误，系统提示出现重复的方法。</p>
+<p>在使用的时候，对于test(String…strings)，你可以直接用test()去调用，标示没有参数，也可以用去test(“aaa”)，也可以用test(new String[]{“aaa”,”bbb”})。</p>
+<p>另外如果既有test(String…strings)函数，又有test()函数，我们在调用test()时，会优先使用test()函数。只有当没有test()函数式，我们调用test()，程序才会走test(String…strings)。</p>
+<p>小案例：</p>
+<pre><code>/**
+ * 校验json数据是否为空
+ * @param param
+ * @param paramKeyArray
+ * @return
+ */
+public static WebResult checkParam(JSONObject param, String... paramKeyArray){
+    WebResult webResult = new WebResult();
+    webResult.ok();
+    if(param != null) {
+        List&lt;String&gt; nullParamList = new ArrayList&lt;&gt;();
+        String paramKey = &quot;&quot;;
+        for(int i = 0; i &lt; paramKeyArray.length; i ++) {
+            paramKey = paramKeyArray[i];
+            System.out.println(param.getString(paramKey));
+            if(StringUtils.isEmpty(param.getString(paramKey))){
+                nullParamList.add(paramKey);
+            }
+        }
+        if(! nullParamList.isEmpty()) {
+            StringBuffer sb = new StringBuffer();
+            sb.append(&quot;参数[&quot;);
+            int i = 0;
+            for(String s : nullParamList) {
+                if(i != 0) {
+                    sb.append(&quot;,&quot;);
+                }
+                sb.append(s);
+                i ++;
+            }
+            sb.append(&quot;]不能为空&quot;);
+            webResult= new WebResult();
+            webResult.fail(sb.toString());
+        }
+    }
+    return webResult;
+}
+
+public static void main(String[] args) {
+    String json = &quot;{\&quot;STAFF_ID\&quot;:\&quot;\&quot;,\&quot;LOGIN_TYPE\&quot;:\&quot;\&quot;}&quot;;
+    JSONObject param = JSONObject.parseObject(json);
+    WebResult webResult = checkParam(param, &quot;STAFF_ID&quot;, &quot;LOGIN_TYPE&quot;);
+    System.out.println(webResult.getMessage());
+}
+</code></pre>
+      
+    </div>
+    <footer class="article-footer">
+      <a data-url="https://hezhiren.cn/2019/01/07/201901071534/" data-id="cjuuo070y0005fcajq8edaccu" class="article-share-link">Share</a>
+      
+      
+    </footer>
+  </div>
+  
+    
+<nav id="article-nav">
+  
+    <a href="/2019/01/11/201901111130/" id="article-nav-newer" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Newer</strong>
+      <div class="article-nav-title">
+        
+          设计模式之一——单例模式
+        
+      </div>
+    </a>
+  
+  
+    <a href="/2018/12/25/201812252130/" id="article-nav-older" class="article-nav-link-wrap">
+      <strong class="article-nav-caption">Older</strong>
+      <div class="article-nav-title">Explain分析sql语句执行效率</div>
+    </a>
+  
+</nav>
+
+  
+</article>
+
+</section>
+        
+          <aside id="sidebar">
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">分类</h3>
+    <div class="widget">
+      <ul class="category-list"><li class="category-list-item"><a class="category-list-link" href="/categories/HBase/">HBase</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/Mysql/">Mysql</a><span class="category-list-count">2</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/SpringBoot/">SpringBoot</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/String/">String</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/定时任务/">定时任务</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/工具类方法/">工具类方法</a><span class="category-list-count">1</span></li><li class="category-list-item"><a class="category-list-link" href="/categories/设计模式/">设计模式</a><span class="category-list-count">2</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签</h3>
+    <div class="widget">
+      <ul class="tag-list"><li class="tag-list-item"><a class="tag-list-link" href="/tags/sql优化/">sql优化</a><span class="tag-list-count">1</span></li><li class="tag-list-item"><a class="tag-list-link" href="/tags/索引/">索引</a><span class="tag-list-count">1</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">标签云</h3>
+    <div class="widget tagcloud">
+      <a href="/tags/sql优化/" style="font-size: 10px;">sql优化</a> <a href="/tags/索引/" style="font-size: 10px;">索引</a>
+    </div>
+  </div>
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">归档</h3>
+    <div class="widget">
+      <ul class="archive-list"><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/03/">三月 2019</a><span class="archive-list-count">1</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2019/01/">一月 2019</a><span class="archive-list-count">3</span></li><li class="archive-list-item"><a class="archive-list-link" href="/archives/2018/12/">十二月 2018</a><span class="archive-list-count">5</span></li></ul>
+    </div>
+  </div>
+
+
+  
+    
+  <div class="widget-wrap">
+    <h3 class="widget-title">最新文章</h3>
+    <div class="widget">
+      <ul>
+        
+          <li>
+            <a href="/2019/03/01/201903011430 /">定时任务QuartZ学习一</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/14/201901141043/">设计模式之二——工厂模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/11/201901111130/">设计模式之一——单例模式</a>
+          </li>
+        
+          <li>
+            <a href="/2019/01/07/201901071534/">String...的用法</a>
+          </li>
+        
+          <li>
+            <a href="/2018/12/25/201812252130/">Explain分析sql语句执行效率</a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+  
+</aside>
+        
+      </div>
+      <footer id="footer">
+  
+  <div class="outer">
+    <div id="footer-info" class="inner">
+      &copy; 2019 hezhiren<br>
+      Powered by <a href="http://hexo.io/" target="_blank">Hexo</a>
+    </div>
+  </div>
+</footer>
+    </div>
+    <nav id="mobile-nav">
+  
+    <a href="/" class="mobile-nav-link">首页</a>
+  
+    <a href="/archives" class="mobile-nav-link">存档</a>
+  
+</nav>
+    
+
+<script src="//ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script>
+
+
+  <link rel="stylesheet" href="/fancybox/jquery.fancybox.css">
+  <script src="/fancybox/jquery.fancybox.pack.js"></script>
+
+
+<script src="/js/script.js"></script>
+
+
+
+  </div>
+</body>
+</html>
